@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: init-sw-agent
+  labels:
+    app: init-sw-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: init-sw-agent
+  template:
+    metadata:
+      labels:
+        app: init-sw-agent
+    spec:
+      containers:
+        - name: init-sw-agent
+          env:
+            - name: INIT_SW_IMG
+              value: os-harbor-svc.default.svc.cloudos:443/library/init-sw:v1
+          image: os-harbor-svc.default.svc.cloudos:443/library/init-sw-webhook:v1
+          imagePullPolicy: Always
+          args:
+            - -tlsCertFile=/etc/webhook/certs/cert.pem
+            - -tlsKeyFile=/etc/webhook/certs/key.pem
+            - -alsologtostderr
+            - -v=4
+            - 2>&1
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/certs
+              readOnly: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: init-sw-certs
