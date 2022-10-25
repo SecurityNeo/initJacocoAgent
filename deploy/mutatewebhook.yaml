@@ -5,12 +5,12 @@ metadata:
   labels:
     app: init-sw-agent
 webhooks:
-  - name: init-sw-agent.unicloud.com
+  - name: init-sw-agent.neo.com
     admissionReviewVersions: ["v1","v1beta1"]
     sideEffects: None
     clientConfig:
       service:
-        name: init-sw-svc
+        name: init-sw-agent-svc
         namespace: default
         path: "api/v1/mutate"
       caBundle: ${CA_BUNDLE}
