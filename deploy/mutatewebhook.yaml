@@ -12,7 +12,7 @@ webhooks:
       service:
         name: init-sw-agent-svc
         namespace: default
-        path: "api/v1/mutate"
+        path: "/api/v1/mutate"
       caBundle: ${CA_BUNDLE}
     rules:
       - operations: [ "CREATE","UPDATE"]

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/wI2L/jsondiff"
@@ -25,20 +24,18 @@ var (
 )
 
 func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
-	SwBackEnd := os.Getenv("SW_AGENT_COLLECTOR_BACKEND_SERVICE")
-
-	var log *bytes.Buffer
+	SwBackEnd := os.Getenv(constants.SWBackendSvcKey)
 
 	resourceNS, resourceName, objectMeta := deploy.Namespace, deploy.Name, &deploy.ObjectMeta
-	log.WriteString("\n----PreCheck----")
+	fmt.Printf("\n----PreCheck----")
 	if !common.RequiredMutate(ignoredNamespaces, objectMeta) {
-		log.WriteString(fmt.Sprintf("\nSkip mutate for [#{resourceNS}/#{resourcename}]"))
+		fmt.Printf("\nSkip mutate for %v/%v", resourceNS, resourceName)
 		return &adminssionv1.AdmissionResponse{
 			Allowed: true,
 		}
 	}
-	log.WriteString("\n----EndCheck----")
-	log.WriteString("\n----PreMutate----")
+	fmt.Printf("\n----EndCheck----")
+	fmt.Printf("\n----PreMutate----")
 	newDp := deploy.DeepCopy()
 	newPodSpec := &newDp.Spec.Template.Spec
 
@@ -59,7 +56,7 @@ func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
 		}
 		var addEnvs = []corev1.EnvVar{
 			{
-				Name:  "SW_AGENT_COLLECTOR_BACKEND_SERVICE",
+				Name:  constants.SWBackendSvcKey,
 				Value: SwBackEnd,
 			},
 			{
@@ -126,20 +123,20 @@ func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
 		initContainer.Resources.Requests = initContainerReq
 		newPodSpec.InitContainers = append(newPodSpec.InitContainers, initContainer)
 	}
-	log.WriteString("\n----EndMutate----")
+	fmt.Printf("\n----EndMutate----")
 
-	log.WriteString("\n----BeginMutateYaml----")
+	fmt.Printf("\n----BeginMutateYaml----")
 	bytes, err := json.Marshal(newPodSpec)
 	if err == nil {
 		yamlStr, err := yaml.JSONToYAML(bytes)
 		if err == nil {
-			log.WriteString("\n" + string(yamlStr))
+			fmt.Printf("\n----YamlContent----" + string(yamlStr))
 		}
 	}
-	log.WriteString("\n----EndMutateYaml----")
+	fmt.Printf("\n----EndMutateYaml----")
 	patch, err := jsondiff.Compare(deploy, newDp)
 	if err != nil {
-		log.WriteString(fmt.Sprintf("\nCompare patch error: #{err.Error()}"))
+		fmt.Printf("\nCompare patch error: %v", err)
 		return &adminssionv1.AdmissionResponse{
 			Result: &metav1.Status{
 				Message: err.Error(),
@@ -149,14 +146,14 @@ func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
 
 	patchBytes, err := json.MarshalIndent(patch, "", "	")
 	if err != nil {
-		log.WriteString(fmt.Sprintf("\nPatch error: #{err.Error()}"))
+		fmt.Printf("\nPatch error: %v", err)
 		return &adminssionv1.AdmissionResponse{
 			Result: &metav1.Status{
 				Message: err.Error(),
 			},
 		}
 	}
-	log.WriteString(fmt.Sprintf("\nAdmissionResponse: patch=#{string(patchBytes)}\n"))
+	fmt.Printf("\nAdmissionResponse: patch=%v\n", string(patchBytes))
 	return &adminssionv1.AdmissionResponse{
 		Allowed: true,
 		Patch:   patchBytes,

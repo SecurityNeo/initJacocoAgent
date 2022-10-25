@@ -25,6 +25,7 @@ func main() {
 	flag.IntVar(&param.port, "port", 1443, "webhook server port")
 	flag.StringVar(&param.certFile, "tlsCertFile", "/opt/certs/cert.pem", "certificate file for https")
 	flag.StringVar(&param.keyFile, "tlsKeyFile", "/opt/certs/key.pem", "private key file")
+	flag.Parse()
 
 	_, err := tls.LoadX509KeyPair(param.certFile, param.keyFile)
 	if err != nil {

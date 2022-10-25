@@ -17,15 +17,13 @@ spec:
       containers:
         - name: init-sw-agent
           env:
-            - name: INIT_SW_IMG
+            - name: INIT_SW_AGENT_IMG
               value: os-harbor-svc.default.svc.cloudos:443/library/init-sw:v1
           image: os-harbor-svc.default.svc.cloudos:443/library/init-sw-webhook:v1
           imagePullPolicy: Always
           args:
             - -tlsCertFile=/etc/webhook/certs/cert.pem
             - -tlsKeyFile=/etc/webhook/certs/key.pem
-            - -alsologtostderr
-            - -v=4
             - 2>&1
           volumeMounts:
             - name: webhook-certs

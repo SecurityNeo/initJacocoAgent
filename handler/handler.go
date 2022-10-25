@@ -25,7 +25,7 @@ var (
 func WebhookCallBack(c *gin.Context) {
 	var body []byte
 	if c.Request.Body != nil {
-		if data, err := ioutil.ReadAll(c.Request.Body); err != nil {
+		if data, err := ioutil.ReadAll(c.Request.Body); err == nil {
 			body = data
 		}
 	}
@@ -61,8 +61,9 @@ func WebhookCallBack(c *gin.Context) {
 				Message: er.Error(),
 			},
 		}
+	} else {
+		admissionRsp = Mutate(&ar)
 	}
-	admissionRsp = Mutate(&ar)
 	admissionReview := adminssionv1.AdmissionReview{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "AdmissionReview",
@@ -86,17 +87,15 @@ func WebhookCallBack(c *gin.Context) {
 }
 
 func Mutate(ar *adminssionv1.AdmissionReview) *adminssionv1.AdmissionResponse {
-	var log *bytes.Buffer
-
 	req := ar.Request
 
-	log.WriteString(fmt.Sprintf("\n ----Begin fo admission for NS=[%v],Kind=[%v],Name=[%v]----", req.Namespace, req.Kind, req.Name))
+	fmt.Printf("\n ----Begin fo admission for NS=[%v],Kind=[%v],Name=[%v]----", req.Namespace, req.Kind.Kind, req.Name)
 	switch req.Kind.Kind {
 	case "Deployment":
 		var dp appsv1.Deployment
 		if err := json.Unmarshal(req.Object.Raw, &dp); err != nil {
 			errMsg := fmt.Sprintf("\nClould not unmarshal raw object: %v", err)
-			log.WriteString(errMsg)
+			fmt.Printf(errMsg)
 			return &adminssionv1.AdmissionResponse{
 				Result: &metav1.Status{
 					Message: err.Error(),
@@ -105,8 +104,8 @@ func Mutate(ar *adminssionv1.AdmissionReview) *adminssionv1.AdmissionResponse {
 		}
 		return service.MutateDeploy(&dp)
 	default:
-		msg := fmt.Sprintf("\n Do not support for this kind of resource #{req.kind.kind}")
-		log.WriteString(msg)
+		msg := fmt.Sprintf("\n Do not support for this kind of resource %v", req.Kind.Kind)
+		fmt.Printf(msg)
 		return &adminssionv1.AdmissionResponse{
 			Result: &metav1.Status{
 				Message: msg,
