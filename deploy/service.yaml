@@ -6,7 +6,7 @@ metadata:
     app: init-sw-agent-svc
 spec:
   ports:
-  - port: 1443
-    targetPort: 1443
+  - port: 443
+    targetPort: 443
   selector:
     app: init-sw-agent

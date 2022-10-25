@@ -32,13 +32,13 @@ func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
 
 	newDp := deploy.DeepCopy()
 	newPodSpec := mutatePodSpec(newDp.Spec.Template.Spec, resourceNS, resourceName)
-
+	newDp.Spec.Template.Spec = newPodSpec
 	fmt.Printf("\n----BeginMutateYaml----")
 	bytes, err := json.Marshal(newPodSpec)
 	if err == nil {
 		yamlStr, err := yaml.JSONToYAML(bytes)
 		if err == nil {
-			fmt.Printf("\n----YamlContent----" + string(yamlStr))
+			fmt.Printf("\n----YamlContent----\n" + string(yamlStr))
 		}
 	}
 	fmt.Printf("\n----EndMutateYaml----")
