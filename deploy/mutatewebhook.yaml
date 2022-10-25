@@ -1,6 +1,25 @@
 apiVersion: admissionregistration.k8s.io/v1
-kind: MutationWebhookConfiguration
+kind: MutatingWebhookConfiguration
 metadata:
   name: init-sw-agent
   labels:
+    app: init-sw-agent
+webhooks:
+  - name: init-sw-agent.unicloud.com
+    admissionReviewVersions: ["v1","v1beta1"]
+    sideEffects: None
+    clientConfig:
+      service:
+        name: init-sw-svc
+        namespace: default
+        path: "api/v1/mutate"
+      caBundle: ${CA_BUNDLE}
+    rules:
+      - operations: [ "CREATE","UPDATE"]
+        apiGroups: ["apps", ""]
+        apiVersions: ["v1"]
+        resources: ["deployments"]
+    namespaceSelector:
+      matchLabels:
+        init-sw: enabled
     
