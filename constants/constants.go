@@ -5,5 +5,5 @@ const (
 	VolumeMountPath                     = "/opt/ApmAgent"
 	JavaToolOptions                     = "-javaagent:/opt/ApmAgent/skywalking-agent/skywalking-agent.jar"
 	InitContainerName                   = "init-skywalking-agent-by-platform"
-	AdmissionWebhookAnnotationMutateKey = "enable-sw.unicloud.com/mutate"
+	AdmissionWebhookAnnotationMutateKey = "enable-sw-agent.neo.com/mutate"
 )
