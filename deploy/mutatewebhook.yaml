@@ -18,7 +18,7 @@ webhooks:
       - operations: [ "CREATE","UPDATE"]
         apiGroups: ["apps", ""]
         apiVersions: ["v1"]
-        resources: ["deployments"]
+        resources: ["deployments","statefulsets"]
     namespaceSelector:
       matchLabels:
         init-sw: enabled

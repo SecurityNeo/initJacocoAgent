@@ -11,8 +11,8 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
-	resourceNS, resourceName, objectMeta := deploy.Namespace, deploy.Name, &deploy.ObjectMeta
+func MutateSts(sts *appsv1.StatefulSet) *adminssionv1.AdmissionResponse {
+	resourceNS, resourceName, objectMeta := sts.Namespace, sts.Name, &sts.ObjectMeta
 	fmt.Printf("\n----PreCheck----")
 	if !common.RequiredMutate(ignoredNamespaces, objectMeta) {
 		fmt.Printf("\nSkip mutate for %v/%v", resourceNS, resourceName)
@@ -22,9 +22,9 @@ func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
 	}
 	fmt.Printf("\n----EndCheck----")
 
-	newDp := deploy.DeepCopy()
-	newPodSpec := mutatePodSpec(newDp.Spec.Template.Spec, resourceNS, resourceName)
-	newDp.Spec.Template.Spec = newPodSpec
+	newSts := sts.DeepCopy()
+	newPodSpec := mutatePodSpec(newSts.Spec.Template.Spec, resourceNS, resourceName)
+	newSts.Spec.Template.Spec = newPodSpec
 	fmt.Printf("\n----BeginMutateYaml----")
 	bytes, err := json.Marshal(newPodSpec)
 	if err == nil {
@@ -34,7 +34,7 @@ func MutateDeploy(deploy *appsv1.Deployment) *adminssionv1.AdmissionResponse {
 		}
 	}
 	fmt.Printf("\n----EndMutateYaml----")
-	patch, err := jsondiff.Compare(deploy, newDp)
+	patch, err := jsondiff.Compare(sts, newSts)
 	if err != nil {
 		fmt.Printf("\nCompare patch error: %v", err)
 		return &adminssionv1.AdmissionResponse{

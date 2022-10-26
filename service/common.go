@@ -6,7 +6,16 @@ import (
 	"initSkywalkingAgent/constants"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os"
+)
+
+var (
+	ignoredNamespaces = []string{
+		metav1.NamespaceSystem,
+		metav1.NamespaceDefault,
+		metav1.NamespacePublic,
+	}
 )
 
 func mutatePodSpec(podSpec corev1.PodSpec, ns string, name string) corev1.PodSpec {
