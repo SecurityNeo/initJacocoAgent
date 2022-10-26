@@ -1,0 +1,4 @@
+## 初始化skywalking java agent
+
+### 实现自动为部署至k8s集群的java服务注入skywalking agent和所需环境变量，目前支持deployment和statefulset两种控制器的java服务。
+

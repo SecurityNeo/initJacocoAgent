@@ -18,8 +18,8 @@ spec:
         - name: init-sw-agent
           env:
             - name: INIT_SW_AGENT_IMG
-              value: os-harbor-svc.default.svc.cloudos:443/library/init-sw:v1
-          image: os-harbor-svc.default.svc.cloudos:443/library/init-sw-webhook:v1
+              value: securityneo/skywalking:java-agent-8.12
+          image:
           imagePullPolicy: Always
           args:
             - -tlsCertFile=/etc/webhook/certs/cert.pem
