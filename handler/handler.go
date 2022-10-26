@@ -103,6 +103,18 @@ func Mutate(ar *adminssionv1.AdmissionReview) *adminssionv1.AdmissionResponse {
 			}
 		}
 		return service.MutateDeploy(&dp)
+	case "StatefulSet":
+		var sts appsv1.StatefulSet
+		if err := json.Unmarshal(req.Object.Raw, &sts); err != nil {
+			errMsg := fmt.Sprintf("\nClould not unmarshal raw object: %v", err)
+			fmt.Printf(errMsg)
+			return &adminssionv1.AdmissionResponse{
+				Result: &metav1.Status{
+					Message: err.Error(),
+				},
+			}
+		}
+		return service.MutateSts(&sts)
 	default:
 		msg := fmt.Sprintf("\n Do not support for this kind of resource %v", req.Kind.Kind)
 		fmt.Printf(msg)
