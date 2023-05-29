@@ -1,10 +1,9 @@
 package constants
 
 const (
-	VolumeName                          = "init-sw-by-platform"
-	VolumeMountPath                     = "/opt/ApmAgent"
-	JavaToolOptions                     = "-javaagent:/opt/ApmAgent/skywalking-agent/skywalking-agent.jar"
-	InitContainerName                   = "init-skywalking-agent-by-platform"
-	AdmissionWebhookAnnotationMutateKey = "enable-sw-agent.neo.com/mutate"
-	SWBackendSvcKey                     = "SW_AGENT_COLLECTOR_BACKEND_SERVICES"
+	VolumeName                          = "init-jacoco-by-platform"
+	VolumeMountPath                     = "/opt/JacocoAgent"
+	JavaToolOptions                     = "-javaagent:/opt/JacocoAgent/jacocoagent.jar=includes=*,output=tcpserver,port=6300,address=$POD_IP,append=true"
+	InitContainerName                   = "init-jacoco-agent-by-platform"
+	AdmissionWebhookAnnotationMutateKey = "enable-jacoco-agent.neo.com/mutate"
 )

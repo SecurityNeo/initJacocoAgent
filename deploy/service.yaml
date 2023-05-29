@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: init-sw-agent-svc
+  name: init-jacoco-agent-svc
   labels:
-    app: init-sw-agent-svc
+    app: init-jacoco-agent-svc
 spec:
   ports:
   - port: 443
     targetPort: 443
   selector:
-    app: init-sw-agent
+    app: init-jacoco-agent

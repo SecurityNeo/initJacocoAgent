@@ -1,4 +1,4 @@
-module initSkywalkingAgent
+module initJacocoAgent
 
 go 1.19
 

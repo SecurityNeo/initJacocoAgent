@@ -3,13 +3,13 @@ package common
 import (
 	"bytes"
 	"fmt"
-	"initSkywalkingAgent/constants"
+	"initJacocoAgent/constants"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os"
 	"strings"
 )
 
-var InitSwAgentImg = os.Getenv("INIT_SW_AGENT_IMG")
+var InitJacocoAgentImg = os.Getenv("INIT_JACOCO_AGENT_IMG")
 
 func RequiredMutate(ignoredList []string, metadata *metav1.ObjectMeta) (required bool) {
 	var log *bytes.Buffer

@@ -2,12 +2,11 @@ package service
 
 import (
 	"fmt"
-	"initSkywalkingAgent/common"
-	"initSkywalkingAgent/constants"
+	"initJacocoAgent/common"
+	"initJacocoAgent/constants"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"os"
 )
 
 var (
@@ -20,7 +19,6 @@ var (
 
 func mutatePodSpec(podSpec corev1.PodSpec, ns string, name string) corev1.PodSpec {
 	fmt.Printf("\n----PreMutate----")
-	SwBackEnd := os.Getenv(constants.SWBackendSvcKey)
 	addVolume := corev1.Volume{
 		Name: constants.VolumeName,
 	}
@@ -37,18 +35,6 @@ func mutatePodSpec(podSpec corev1.PodSpec, ns string, name string) corev1.PodSpe
 			MountPath: constants.VolumeMountPath,
 		}
 		var addEnvs = []corev1.EnvVar{
-			{
-				Name:  constants.SWBackendSvcKey,
-				Value: SwBackEnd,
-			},
-			{
-				Name:  "SW_AGENT_NAMESPACE",
-				Value: ns,
-			},
-			{
-				Name:  "SW_AGENT_NAME",
-				Value: name,
-			},
 			{
 				Name:  "JAVA_TOOL_OPTIONS",
 				Value: constants.JavaToolOptions,
@@ -89,9 +75,9 @@ func mutatePodSpec(podSpec corev1.PodSpec, ns string, name string) corev1.PodSpe
 	if addInitContainerFlag {
 		initContainer := corev1.Container{
 			Name:    constants.InitContainerName,
-			Image:   common.InitSwAgentImg,
+			Image:   common.InitJacocoAgentImg,
 			Command: []string{"/bin/sh"},
-			Args:    []string{"-c", "cp -r /opt/skywalking-agent " + constants.VolumeMountPath},
+			Args:    []string{"-c", "cp /opt/jacoco-agent/jacocoagent.jar " + constants.VolumeMountPath},
 			VolumeMounts: []corev1.VolumeMount{
 				{
 					Name:      constants.VolumeName,

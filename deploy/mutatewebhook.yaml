@@ -1,16 +1,16 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: init-sw-agent
+  name: init-jacoco-agent
   labels:
-    app: init-sw-agent
+    app: init-jacoco-agent
 webhooks:
-  - name: init-sw-agent.neo.com
+  - name: init-jacoco-agent.neo.com
     admissionReviewVersions: ["v1","v1beta1"]
     sideEffects: None
     clientConfig:
       service:
-        name: init-sw-agent-svc
+        name: init-jacoco-agent-svc
         namespace: default
         path: "/api/v1/mutate"
       caBundle: ${CA_BUNDLE}
@@ -21,5 +21,5 @@ webhooks:
         resources: ["deployments","statefulsets"]
     namespaceSelector:
       matchLabels:
-        init-sw: enabled
+        enable-jacoco-agent.neo.com/mutate: "true"
     

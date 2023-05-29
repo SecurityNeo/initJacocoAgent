@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/common/log"
-	"initSkywalkingAgent/service"
+	"initJacocoAgent/service"
 	"io/ioutil"
 	adminssionv1 "k8s.io/api/admission/v1"
 	appsv1 "k8s.io/api/apps/v1"

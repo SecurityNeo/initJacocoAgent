@@ -46,8 +46,8 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-[ -z ${service} ] && service=init-sw-agent-svc
-[ -z ${secret} ] && secret=init-sw-certs
+[ -z ${service} ] && service=init-jacoco-agent-svc
+[ -z ${secret} ] && secret=init-jacoco-certs
 [ -z ${namespace} ] && namespace=default
 
 if [ ! -x "$(command -v openssl)" ]; then

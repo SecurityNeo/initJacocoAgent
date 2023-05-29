@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: init-sw-agent
+  name: init-jacoco-agent
   labels:
-    app: init-sw-agent
+    app: init-jacoco-agent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: init-sw-agent
+      app: init-jacoco-agent
   template:
     metadata:
       labels:
-        app: init-sw-agent
+        app: init-jacoco-agent
     spec:
       containers:
-        - name: init-sw-agent
+        - name: init-jacoco-agent
           env:
-            - name: INIT_SW_AGENT_IMG
-              value: securityneo/skywalking:java-agent-8.12
+            - name: INIT_JACOCO_AGENT_IMG
+              value: securityneo/jacocoagent:0.8.10
           image:
           imagePullPolicy: Always
           args:
@@ -32,4 +32,4 @@ spec:
       volumes:
         - name: webhook-certs
           secret:
-            secretName: init-sw-certs
+            secretName: init-jacoco-certs
