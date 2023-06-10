@@ -1,24 +1,13 @@
 package service
 
 import (
-	"fmt"
 	"initJacocoAgent/common"
 	"initJacocoAgent/constants"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var (
-	ignoredNamespaces = []string{
-		metav1.NamespaceSystem,
-		metav1.NamespaceDefault,
-		metav1.NamespacePublic,
-	}
-)
-
-func mutatePodSpec(podSpec corev1.PodSpec, ns string, name string) corev1.PodSpec {
-	fmt.Printf("\n----PreMutate----")
+func mutatePodSpec(podSpec corev1.PodSpec) corev1.PodSpec {
 	addVolume := corev1.Volume{
 		Name: constants.VolumeName,
 	}
@@ -91,6 +80,5 @@ func mutatePodSpec(podSpec corev1.PodSpec, ns string, name string) corev1.PodSpe
 		initContainer.Resources.Requests = initContainerReq
 		podSpec.InitContainers = append(podSpec.InitContainers, initContainer)
 	}
-	fmt.Printf("\n----EndMutate----")
 	return podSpec
 }

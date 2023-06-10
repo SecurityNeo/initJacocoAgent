@@ -18,12 +18,15 @@ spec:
         - name: init-jacoco-agent
           env:
             - name: INIT_JACOCO_AGENT_IMG
-              value: securityneo/jacocoagent:0.8.10
+              value: os-harbor-svc.default.svc.cloudos:443/helm/h3ccloud/jacocoagent:0.8.10
           image:
           imagePullPolicy: Always
           args:
             - -tlsCertFile=/etc/webhook/certs/cert.pem
             - -tlsKeyFile=/etc/webhook/certs/key.pem
+            - -protect_ns=kube-system
+            - -protect_ns=kube-public
+            - -protect_ns=default
             - 2>&1
           volumeMounts:
             - name: webhook-certs

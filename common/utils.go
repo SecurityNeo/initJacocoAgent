@@ -1,7 +1,6 @@
 package common
 
 import (
-	"bytes"
 	"fmt"
 	"initJacocoAgent/constants"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -12,11 +11,11 @@ import (
 var InitJacocoAgentImg = os.Getenv("INIT_JACOCO_AGENT_IMG")
 
 func RequiredMutate(ignoredList []string, metadata *metav1.ObjectMeta) (required bool) {
-	var log *bytes.Buffer
+
 	for _, ns := range ignoredList {
 		if metadata.Namespace == ns {
-			log.WriteString(fmt.Sprintf("\nSkip validate for [#{metadata.Name}]"))
 			required = false
+			fmt.Printf("Skip mutate for %v,because the namespace %v is protected.\n", metadata.Name, ns)
 			return
 		}
 	}
@@ -28,6 +27,8 @@ func RequiredMutate(ignoredList []string, metadata *metav1.ObjectMeta) (required
 	case "true":
 		required = true
 	default:
+		annotation := constants.AdmissionWebhookAnnotationMutateKey + ": " + "true"
+		fmt.Printf("Skip mutate for %v,because the resource has no annotations [%v].\n", metadata.Name, annotation)
 		required = false
 	}
 	return

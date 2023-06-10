@@ -13,7 +13,7 @@ webhooks:
         name: init-jacoco-agent-svc
         namespace: default
         path: "/api/v1/mutate"
-      caBundle: ${CA_BUNDLE}
+      caBundle: CA_BUNDLE
     rules:
       - operations: [ "CREATE","UPDATE"]
         apiGroups: ["apps", ""]
